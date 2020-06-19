@@ -37,7 +37,6 @@ describe("TwitterService", () => {
 
 		it("fetches the discord channel to send the message in", async () => {
 			const fetch = sandbox.stub(discordClient.channels, "fetch");
-			sandbox.stub(TwitterService.prototype, "handleTwitterStream")
 
 			await twitterService.streamToDiscord(discordClient);
 
@@ -45,10 +44,14 @@ describe("TwitterService", () => {
 		});
 
 		it("streams twitter for statuses/filter on the codesupportdev account", async () => {
-			sandbox.stub(TwitterService.prototype, "handleTwitterStream")
+			sandbox.stub(twitterService, "handleTwitterStream");
+			sandbox.stub(discordClient.channels, "fetch");
+
+			const streamSpy = sandbox.spy(Twitter.prototype, "stream");
+
 			await twitterService.streamToDiscord(discordClient);
 
-			expect(twitter.stream.calledOnce).to.be.true;
+			expect(streamSpy.calledOnce).to.be.true;
 		});
 
 		afterEach(() => {
